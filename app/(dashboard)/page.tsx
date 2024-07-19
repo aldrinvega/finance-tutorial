@@ -1,10 +1,9 @@
-import { Button } from "@/components/ui/button";
-
+"use client";
 
 export default function Home() {
   return (
-   <p>
-    This is an authenticated route
-   </p>
+   <div>
+    Dahsboard Page
+   </div>
   );
 }
