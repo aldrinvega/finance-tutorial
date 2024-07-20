@@ -1,9 +1,9 @@
 "use client";
 
 
-import { NeAccountSheet } from "@/features/accounts/components/new-account-sheet";
+import { NewAccountSheet } from "@/features/accounts/components/new-account-sheet";
 import { useMountedState } from "react-use";
-
+import { EditAccountSheet } from "@/features/accounts/components/edit-account-sheet";
 export const SheetProvider = () => {
     const isMounted = useMountedState();
 
@@ -11,7 +11,8 @@ export const SheetProvider = () => {
     
     return (
         <>
-            <NeAccountSheet/>
+            <NewAccountSheet/>
+            <EditAccountSheet/>
         </>
     );
 };
