@@ -1,18 +1,22 @@
 
 import {Hono} from "hono";
 import { db } from "@/db/drizzle";
-import { accounts } from "@/db/schema";
+import { accounts, insertAccountSchema } from "@/db/schema";
 import { clerkMiddleware, getAuth } from "@hono/clerk-auth";
 import { HTTPException } from "hono/http-exception";
+import { eq } from "drizzle-orm";
+import { zValidator } from "@hono/zod-validator";
+import { createId } from "@paralleldrive/cuid2"
 const app = new Hono()
-    .get("/", clerkMiddleware(), async (c) => {
+    .get(
+        "/", 
+        clerkMiddleware(), 
+        async (c) => {
 
         const auth = getAuth(c)
 
         if(!auth?.userId){
-            throw new HTTPException(401, {
-                res: c.json({eror: "Unathorized"}, 401),
-            });
+            return c.json({error: "Unauthorized"}, 401);
         }
             const data = await db
                 .select({
@@ -20,7 +24,32 @@ const app = new Hono()
                     name: accounts.name
                 })
                 .from(accounts)
+                .where(eq(accounts.userId, auth.userId));
+
             return c.json({data})
+    })
+    .post(
+        "/",
+        clerkMiddleware(),
+        zValidator("json", insertAccountSchema.pick({
+            name: true,
+        })),
+        async (c) => {
+            const auth = getAuth(c);
+            const value = c.req.valid("json");
+
+            if(!auth?.userId){
+                return c.json({error: "Unauthorized"}, 401);
+            }
+
+            // Geting object use "[]" to destructure the data
+            const [data] = await db.insert(accounts).values({
+                id: createId(),
+                userId: auth.userId,
+                ...value,
+            }).returning();
+
+            return c.json({ data });
     });
 
 export default app;
