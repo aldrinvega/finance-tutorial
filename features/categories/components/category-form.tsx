@@ -5,7 +5,7 @@ import {zodResolver} from "@hookform/resolvers/zod"
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { PostAccount, postAccountSchema } from "@/db/schema";
+import {PostCategories, postCategoriesSchema } from "@/db/schema";
 import { 
     Form, 
     FormControl, 
@@ -17,13 +17,13 @@ import {
 
 type Props = {
     id?: string;
-    defaultValues?: PostAccount;
-    onSubmit: (values: PostAccount) => void;
+    defaultValues?: PostCategories;
+    onSubmit: (values: PostCategories) => void;
     onDelete?: () => void;
     disabled?: boolean;
 };
 
-export const AccountForm = ({
+export const CategoryForm = ({
     id,
     defaultValues,
     onSubmit,
@@ -31,12 +31,12 @@ export const AccountForm = ({
     disabled
 }: Props) => {
 
-    const form = useForm<PostAccount>({
-        resolver: zodResolver(postAccountSchema),
+    const form = useForm<PostCategories>({
+        resolver: zodResolver(postCategoriesSchema),
         defaultValues: defaultValues
     });
 
-    const handleSubmit = (values: PostAccount) => {
+    const handleSubmit = (values: PostCategories) => {
         onSubmit(values);
     };
 
@@ -60,7 +60,7 @@ export const AccountForm = ({
                             <FormControl>
                                 <Input
                                     disabled={disabled}
-                                    placeholder="e.g. Cash, Bank, Credit Card"
+                                    placeholder="e.g. Food, Travel, etc."
                                     {...field}    
                                 >
                                 </Input>
@@ -70,7 +70,7 @@ export const AccountForm = ({
                 )}
                 />
                 <Button className="w-full" disabled={disabled}>
-                    {id ? "Save changes" : "Create account"}
+                    {id ? "Save changes" : "Create category"}
                 </Button>
                 { !!id && 
                     (
@@ -82,7 +82,7 @@ export const AccountForm = ({
                         variant="outline"
                         >
                         <Trash className="size-4 mr-2"/>
-                        Delete account
+                        Delete category
                         </Button>
                     )}
             </form>
